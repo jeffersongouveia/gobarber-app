@@ -5,6 +5,7 @@ import {
   ScrollView,
   View,
   Image,
+  TextInput,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
@@ -26,8 +27,10 @@ import {
 } from './styles'
 
 const SignIn: React.FC = () => {
-  const formRef = useRef<FormHandles>(null)
   const navigation = useNavigation()
+
+  const formRef = useRef<FormHandles>(null)
+  const passwordRef = useRef<TextInput>(null)
 
   const handleSignIn = useCallback((data: object) => {
     console.log(data)
@@ -51,9 +54,31 @@ const SignIn: React.FC = () => {
               <Title>Faça seu login</Title>
             </View>
 
-            <Form ref={formRef} onSubmit={handleSignIn} style={{ width: '100%' }}>
-              <Input name="email" icon="mail" placeholder="E-mail" />
-              <Input name="password" icon="lock" placeholder="Senha" />
+            <Form
+              ref={formRef}
+              onSubmit={handleSignIn}
+              style={{ width: '100%' }}
+            >
+              <Input
+                name="email"
+                icon="mail"
+                placeholder="E-mail"
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                returnKeyType="next"
+                onSubmitEditing={() => passwordRef.current?.focus()}
+              />
+
+              <Input
+                ref={passwordRef}
+                name="password"
+                icon="lock"
+                placeholder="Senha"
+                returnKeyType="send"
+                secureTextEntry
+                onSubmitEditing={() => formRef.current?.submitForm()}
+              />
 
               <Button onPress={() => formRef.current?.submitForm()}>
                 Entrar
