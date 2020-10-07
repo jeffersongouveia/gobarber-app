@@ -3,7 +3,9 @@ module.exports = {
   extends: '@react-native-community',
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
+
   rules: {
-    semi: "off",
+    "react-native/no-inline-styles": "off",
+    "semi": "off",
   },
 };
