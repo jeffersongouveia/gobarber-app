@@ -1,24 +1,62 @@
 import React from 'react'
-import { Image } from 'react-native'
+import {
+  Platform,
+  KeyboardAvoidingView,
+  ScrollView,
+  View,
+  Image,
+} from 'react-native'
+import Icon from 'react-native-vector-icons/Feather'
 
 import Input from '../../components/Input'
 import Button from '../../components/Button'
 
 import logo from '../../assets/images/logo.png'
-import { Container, Title } from './styles'
+import {
+  Container,
+  Title,
+  ForgotPassword,
+  ForgotPasswordText,
+  CreateAccount,
+  CreateAccountText,
+} from './styles'
 
 const SignIn: React.FC = () => {
   return (
-    <Container>
-      <Image source={logo} />
+    <>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        enabled
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ flex: 1 }}
+        >
+          <Container>
+            <Image source={logo} />
 
-      <Title>Faça seu login</Title>
+            <View>
+              <Title>Faça seu login</Title>
+            </View>
 
-      <Input name="email" icon="mail" placeholder="E-mail" />
-      <Input name="password" icon="lock" placeholder="Senha" />
+            <Input name="email" icon="mail" placeholder="E-mail" />
+            <Input name="password" icon="lock" placeholder="Senha" />
 
-      <Button onPress={() => console.log('pressed')}>Entrar</Button>
-    </Container>
+            <Button onPress={() => console.log('pressed')}>Entrar</Button>
+
+            <ForgotPassword onPress={() => console.log('pressed')}>
+              <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
+            </ForgotPassword>
+          </Container>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      <CreateAccount onPress={() => console.log('pressed')}>
+        <Icon name="log-in" size={20} color="#ff9000" />
+        <CreateAccountText>Criar uma conta</CreateAccountText>
+      </CreateAccount>
+    </>
   )
 }
 
