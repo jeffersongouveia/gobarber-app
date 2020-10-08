@@ -14,6 +14,7 @@ import { FormHandles } from '@unform/core'
 import Icon from 'react-native-vector-icons/Feather'
 import * as Yup from 'yup'
 
+import api from '../../services/api'
 import getValidationsErrors from '../../utils/getValidationsErrors'
 
 import Input from '../../components/Input'
@@ -35,36 +36,39 @@ const SignUp: React.FC = () => {
   const emailRef = useRef<TextInput>(null)
   const passwordRef = useRef<TextInput>(null)
 
-  const handleSubmit = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors({})
+  const handleSubmit = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({})
 
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('Use um e-mail válido'),
-        password: Yup.string().min(6, 'No mínimo 6 caracteres'),
-      })
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Use um e-mail válido'),
+          password: Yup.string().min(6, 'No mínimo 6 caracteres'),
+        })
 
-      await schema.validate(data, { abortEarly: false })
-      // await api.post('/users', data)
+        await schema.validate(data, { abortEarly: false })
+        await api.post('/users', data)
 
-      Alert.alert('Cadastro realizado', 'Você já pode fazer seu login')
-      // history.push('/sign-in')
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationsErrors(error)
-        formRef.current?.setErrors(errors)
-        return
+        Alert.alert('Cadastro realizado', 'Você já pode fazer seu login')
+        navigation.goBack()
+      } catch (error) {
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationsErrors(error)
+          formRef.current?.setErrors(errors)
+          return
+        }
+
+        Alert.alert(
+          'Erro no cadastro',
+          'Ocorreu um erro ao fazer o cadastro, tente novamente',
+        )
       }
-
-      Alert.alert(
-        'Erro no cadastro',
-        'Ocorreu um erro ao fazer o cadastro, tente novamente',
-      )
-    }
-  }, [])
+    },
+    [navigation],
+  )
 
   return (
     <>
