@@ -18,7 +18,7 @@ interface SessionUser {
   id: string
   name: string
   email: string
-  avatar: string
+  avatar_url: string
 }
 
 interface SessionResponse {
@@ -43,7 +43,9 @@ export const AuthProvider: React.FC = ({ children }) => {
   const signIn = useCallback(async (params) => {
     const { data } = await api.post<SessionResponse>('/sessions', params)
 
+    api.defaults.headers.authorization = `Bearer ${data.token}`
     setSession(data)
+
     await AsyncStorage.multiSet([
       ['@GoBarber:token', data.token],
       ['@GoBarber:user', JSON.stringify(data.user)],
@@ -64,6 +66,8 @@ export const AuthProvider: React.FC = ({ children }) => {
       ])
 
       if (token[1] && user[1]) {
+        api.defaults.headers.authorization = `Bearer ${token[1]}`
+
         setSession({
           token: token[1],
           user: JSON.parse(user[1]),
