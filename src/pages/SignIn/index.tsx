@@ -1,13 +1,5 @@
 import React, { useCallback, useRef } from 'react'
-import {
-  Platform,
-  KeyboardAvoidingView,
-  ScrollView,
-  View,
-  Image,
-  TextInput,
-  Alert,
-} from 'react-native'
+import { Platform, KeyboardAvoidingView, ScrollView, View, Image, TextInput, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
@@ -22,14 +14,7 @@ import { useAuth } from '../../hooks/auth'
 import getValidationsErrors from '../../utils/getValidationsErrors'
 
 import logo from '../../assets/images/logo.png'
-import {
-  Container,
-  Title,
-  ForgotPassword,
-  ForgotPasswordText,
-  CreateAccount,
-  CreateAccountText,
-} from './styles'
+import { Container, Title, ForgotPassword, ForgotPasswordText, CreateAccount, CreateAccountText } from './styles'
 
 interface FormProps {
   email: string
@@ -49,10 +34,8 @@ const SignIn: React.FC = () => {
         formRef.current?.setErrors({})
 
         const schema = Yup.object().shape({
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Use um e-mail válido'),
-          password: Yup.string().required('Senha obrigatória'),
+          email: Yup.string().required('Email required').email('Use an valid email'),
+          password: Yup.string().required('Password required'),
         })
 
         await schema.validate(data, { abortEarly: false })
@@ -67,10 +50,7 @@ const SignIn: React.FC = () => {
           return
         }
 
-        Alert.alert(
-          'Erro na autenticação',
-          'Ocorreu um erro ao fazer login, confira os valores informados',
-        )
+        Alert.alert('Failed', 'Something went wrong while trying to sign in.')
       }
     },
     [signIn],
@@ -78,31 +58,20 @@ const SignIn: React.FC = () => {
 
   return (
     <>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        enabled
-      >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
-        >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flex: 1 }}>
           <Container>
             <Image source={logo} />
 
             <View>
-              <Title>Faça seu login</Title>
+              <Title>Sign In</Title>
             </View>
 
-            <Form
-              ref={formRef}
-              onSubmit={handleSignIn}
-              style={{ width: '100%' }}
-            >
+            <Form ref={formRef} onSubmit={handleSignIn} style={{ width: '100%' }}>
               <Input
                 name="email"
                 icon="mail"
-                placeholder="E-mail"
+                placeholder="Email"
                 autoCorrect={false}
                 autoCapitalize="none"
                 keyboardType="email-address"
@@ -114,19 +83,17 @@ const SignIn: React.FC = () => {
                 ref={passwordRef}
                 name="password"
                 icon="lock"
-                placeholder="Senha"
+                placeholder="Password"
                 returnKeyType="send"
                 secureTextEntry
                 onSubmitEditing={() => formRef.current?.submitForm()}
               />
 
-              <Button onPress={() => formRef.current?.submitForm()}>
-                Entrar
-              </Button>
+              <Button onPress={() => formRef.current?.submitForm()}>Sign In</Button>
             </Form>
 
             <ForgotPassword onPress={() => console.log('pressed')}>
-              <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
+              <ForgotPasswordText>Forgot My Password</ForgotPasswordText>
             </ForgotPassword>
           </Container>
         </ScrollView>
@@ -134,7 +101,7 @@ const SignIn: React.FC = () => {
 
       <CreateAccount onPress={() => navigation.navigate('SignUp')}>
         <Icon name="log-in" size={20} color="#ff9000" />
-        <CreateAccountText>Criar uma conta</CreateAccountText>
+        <CreateAccountText>Sign Up</CreateAccountText>
       </CreateAccount>
     </>
   )

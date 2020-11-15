@@ -1,13 +1,5 @@
 import React, { useRef, useCallback } from 'react'
-import {
-  Platform,
-  KeyboardAvoidingView,
-  ScrollView,
-  View,
-  Image,
-  TextInput,
-  Alert,
-} from 'react-native'
+import { Platform, KeyboardAvoidingView, ScrollView, View, Image, TextInput, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
@@ -43,16 +35,14 @@ const SignUp: React.FC = () => {
 
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Use um e-mail válido'),
-          password: Yup.string().min(6, 'No mínimo 6 caracteres'),
+          email: Yup.string().required('Email required').email('Use an valid email'),
+          password: Yup.string().min(6, 'At minimum of 6 characters'),
         })
 
         await schema.validate(data, { abortEarly: false })
         await api.post('/users', data)
 
-        Alert.alert('Cadastro realizado', 'Você já pode fazer seu login')
+        Alert.alert('Done', 'You can now login')
         navigation.goBack()
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
@@ -61,10 +51,7 @@ const SignUp: React.FC = () => {
           return
         }
 
-        Alert.alert(
-          'Erro no cadastro',
-          'Ocorreu um erro ao fazer o cadastro, tente novamente',
-        )
+        Alert.alert('Failed', 'Something went wrong while trying to sign up.')
       }
     },
     [navigation],
@@ -72,31 +59,20 @@ const SignUp: React.FC = () => {
 
   return (
     <>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        enabled
-      >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ flex: 1 }}
-        >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flex: 1 }}>
           <Container>
             <Image source={logo} />
 
             <View>
-              <Title>Crie sua conta</Title>
+              <Title>Sign Up</Title>
             </View>
 
-            <Form
-              ref={formRef}
-              onSubmit={handleSubmit}
-              style={{ width: '100%' }}
-            >
+            <Form ref={formRef} onSubmit={handleSubmit} style={{ width: '100%' }}>
               <Input
                 name="name"
                 icon="user"
-                placeholder="Nome"
+                placeholder="Name"
                 autoCapitalize="words"
                 returnKeyType="next"
                 onSubmitEditing={() => emailRef.current?.focus()}
@@ -106,7 +82,7 @@ const SignUp: React.FC = () => {
                 ref={emailRef}
                 name="email"
                 icon="mail"
-                placeholder="E-mail"
+                placeholder="Email"
                 autoCorrect={false}
                 autoCapitalize="none"
                 keyboardType="email-address"
@@ -118,16 +94,14 @@ const SignUp: React.FC = () => {
                 ref={passwordRef}
                 name="password"
                 icon="lock"
-                placeholder="Senha"
+                placeholder="Password"
                 textContentType="newPassword"
                 returnKeyType="send"
                 secureTextEntry
                 onSubmitEditing={() => formRef.current?.submitForm()}
               />
 
-              <Button onPress={() => formRef.current?.submitForm()}>
-                Cadastrar
-              </Button>
+              <Button onPress={() => formRef.current?.submitForm()}>Sign Up</Button>
             </Form>
           </Container>
         </ScrollView>
@@ -135,7 +109,7 @@ const SignUp: React.FC = () => {
 
       <BackToSignIn onPress={() => navigation.goBack()}>
         <Icon name="arrow-left" size={20} color="#fff" />
-        <BackToSignInText>Voltar para o login</BackToSignInText>
+        <BackToSignInText>Back to Sign In</BackToSignInText>
       </BackToSignIn>
     </>
   )

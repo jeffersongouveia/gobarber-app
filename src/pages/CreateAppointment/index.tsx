@@ -97,7 +97,7 @@ const CreateAppointment: React.FC = () => {
       await api.post('/appointments', params)
       navigate('AppointmentCreated', { date: date.getTime() })
     } catch (e) {
-      Alert.alert('Failed', 'Something goes wrong, try again')
+      Alert.alert('Failed', 'Something went wrong, try again')
     }
   }, [navigate, selectedDate, selectedHour, selectedProvider])
 
