@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRoute, useNavigation } from '@react-navigation/native'
-import { Platform } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import { format } from 'date-fns'
 
 import Icon from 'react-native-vector-icons/Feather'
@@ -32,6 +32,8 @@ import {
   SectionTitle,
   Title,
   UserAvatar,
+  CreateAppointmentButton,
+  CreateAppointmentButtonText,
 } from './styles'
 
 import { Provider } from '../Dashboard'
@@ -48,7 +50,7 @@ interface DayAvailabilityProps {
 const CreateAppointment: React.FC = () => {
   const { user } = useAuth()
 
-  const { goBack } = useNavigation()
+  const { goBack, navigate } = useNavigation()
   const route = useRoute()
   const routerParams = route.params as RouteParams
 
@@ -80,6 +82,24 @@ const CreateAppointment: React.FC = () => {
   const handleSelectHour = useCallback((hour: number) => {
     setSelectedHour(hour)
   }, [])
+
+  const handleCreateAppointment = useCallback(async () => {
+    try {
+      const date = new Date(selectedDate)
+      date.setHours(selectedHour)
+      date.setMinutes(0)
+
+      const params = {
+        provider_id: selectedProvider,
+        date,
+      }
+
+      await api.post('/appointments', params)
+      navigate('AppointmentCreated', { date: date.getTime() })
+    } catch (e) {
+      Alert.alert('Failed', 'Something goes wrong, try again')
+    }
+  }, [navigate, selectedDate, selectedHour, selectedProvider])
 
   useEffect(() => {
     api
@@ -153,10 +173,10 @@ const CreateAppointment: React.FC = () => {
         </ProvidersListContainer>
 
         <Calendar>
-          <Title>Choose the date</Title>
+          <Title>Choose Date</Title>
 
           <OpenDatePickerButton onPress={handleToggleDatePicker}>
-            <OpenDatePickerButtonText>Choose another date</OpenDatePickerButtonText>
+            <OpenDatePickerButtonText>{showDatePicker ? 'Hide' : 'Show'} Calendar</OpenDatePickerButtonText>
           </OpenDatePickerButton>
 
           {showDatePicker && (
@@ -171,7 +191,7 @@ const CreateAppointment: React.FC = () => {
         </Calendar>
 
         <Schedule>
-          <Title>Choose time</Title>
+          <Title>Choose Time</Title>
 
           <Section>
             <SectionTitle>Morning</SectionTitle>
@@ -209,6 +229,10 @@ const CreateAppointment: React.FC = () => {
             </SectionContent>
           </Section>
         </Schedule>
+
+        <CreateAppointmentButton onPress={handleCreateAppointment}>
+          <CreateAppointmentButtonText>Make Appointment</CreateAppointmentButtonText>
+        </CreateAppointmentButton>
       </Content>
     </Container>
   )
