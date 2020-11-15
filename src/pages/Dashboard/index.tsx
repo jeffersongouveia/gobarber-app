@@ -90,7 +90,7 @@ const Dashboard: React.FC = () => {
 
               <ProviderMeta>
                 <Icon name="clock" size={14} color="#ff9000" />
-                <ProviderMetaText>From 8am to 6pm</ProviderMetaText>
+                <ProviderMetaText>From 8 a.m. to 6 p.m.</ProviderMetaText>
               </ProviderMeta>
             </ProviderInfo>
           </ProviderContainer>
